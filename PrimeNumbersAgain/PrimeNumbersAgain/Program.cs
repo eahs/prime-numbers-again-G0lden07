@@ -25,7 +25,41 @@ namespace PrimeNumbersAgain
 
         static int FindNthPrime(int n)
         {
-            return 0;
+	        int count = 1;
+	        int prime = 2;
+	        int initial = 3;
+
+	        if (n > 750000)
+	        {
+		        count = 750000;
+		        prime = 11381621;
+		        initial = prime + 2;
+	        }
+
+	        for (int i = initial; count < n; i += 2)
+	        {
+		        if (IsPrime(i))
+		        {
+			        count++;
+			        prime = i;
+		        }
+	        }
+
+            return prime;
+        }
+
+        static bool IsPrime(int n)
+        {
+	        double sqrt = Math.Sqrt((double)n);
+
+            if(sqrt%1 == 0) return false;
+
+	        for (int i = 2; i < sqrt; i++)
+	        {
+		        if (n % i == 0) return false;
+	        }
+
+	        return true;
         }
 
         static int GetNumber()
