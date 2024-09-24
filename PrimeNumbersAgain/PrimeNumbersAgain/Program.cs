@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace PrimeNumbersAgain
@@ -27,18 +28,11 @@ namespace PrimeNumbersAgain
         {
 	        int count = 1;
 	        int prime = 2;
-	        int initial = 3;
+	        List<int> primes = GeneratePrimesUpTo(2000000);
 
-	        if (n > 750000)
+	        for (int i = 3; count < n; i += 2)
 	        {
-		        count = 750000;
-		        prime = 11381621;
-		        initial = prime + 2;
-	        }
-
-	        for (int i = initial; count < n; i += 2)
-	        {
-		        if (IsPrime(i))
+		        if (IsPrime(primes, i))
 		        {
 			        count++;
 			        prime = i;
@@ -48,16 +42,45 @@ namespace PrimeNumbersAgain
             return prime;
         }
 
-        static bool IsPrime(int n)
+        static List<int> GeneratePrimesUpTo(int limit)
+        {
+	        List<int> primeList = new List<int>();
+	        bool[] isPrime = new bool[limit + 1];
+	        for (int i = 2; i <= limit; i++) isPrime[i] = true;
+
+	        for (int p = 2; p * p <= limit; p++)
+	        {
+		        if (isPrime[p])
+		        {
+			        for (int multiple = p * p; multiple <= limit; multiple += p)
+			        {
+				        isPrime[multiple] = false;
+			        }
+		        }
+	        }
+
+	        for (int i = 2; i <= limit; i++)
+	        {
+		        if (isPrime[i])
+		        {
+			        primeList.Add(i);
+		        }
+	        }
+
+	        return primeList;
+        }
+
+        static bool IsPrime(List<int> primes, int n)
         {
 	        double sqrt = Math.Sqrt((double)n);
 
             if(sqrt%1 == 0) return false;
 
-	        for (int i = 2; i < sqrt; i++)
-	        {
-		        if (n % i == 0) return false;
-	        }
+            foreach (int prime in primes)
+            {
+	            if (prime > sqrt) break;
+	            if (n % prime == 0) return false;
+            }
 
 	        return true;
         }
